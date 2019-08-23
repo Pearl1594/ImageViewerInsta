@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 node_modules
 package-lock.json
 src/screens/home/Home.js
 src/screens/home/Home.css
-=======
 package-lock.json
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -27,6 +25,5 @@ package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
->>>>>>> BT.HomeHeader
 src/common/header/Header.js
 src/common/header/Header.css
