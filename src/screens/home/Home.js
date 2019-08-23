@@ -60,10 +60,32 @@ class Home extends Component {
     constructor() {
         super()
         this.state = {
+            profile_picture:"",
             liked: false
         };
     }
+componentWillMount(){
+    // Get data from first API endpoint
 
+    let data = null;
+    let xhr = new XMLHttpRequest();
+    let that = this ;
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState == 4){
+            that.setState({
+                profile_picture : JSON.parse(this.responseText).data.profile_picture
+                
+            });   
+            console.log(that.state.profile_picture);      
+        };
+        
+    });
+    xhr.open("GET",this.props.baseUrl+"?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
+    xhr.send(data);
+
+}
+
+    
 
 
     likeBtnHandler = () => {
@@ -76,7 +98,7 @@ class Home extends Component {
         const { classes } = this.props;
         return (
             <div>
-                <Header />
+                <Header profile_picture = {this.state.profile_picture}/>
 
                 <div className="flex-container">
                     <Grid container spacing={3} justify="center" wrap="wrap" alignContent="center" className={classes.grid}>
