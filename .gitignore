@@ -1,2 +1,6 @@
 node_modules
 package-lock.json
+src/screens/home/Home.js
+src/screens/home/Home.css
+src/common/header/Header.js
+src/common/header/Header.css
