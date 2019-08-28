@@ -34,6 +34,17 @@
 
     color: black;
 }
-.image-comment-box{
-    margin-top: 25px;
+
+.comment-display{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.comment-text{
+    padding-left:10px;
+}
+
+.comment-username{
+    font-size: inherit;
 }
