@@ -48,7 +48,7 @@ class Header extends Component {
         this.openMenu();
     };
     onSearchChangeHandler = (event) => {
-        //this.props.onSearchTextChange(event.target.value);
+        this.props.onSearchTextChange(event.target.value);
     }
 
     render() {
@@ -64,7 +64,7 @@ class Header extends Component {
                     </span>
                     <span>
                         <IconButton id="profile-icon" onClick={event => this.profileButtonClicked(event)}>
-                            <img src={profileImage} alt = {profileImage} id="profile-picture" />
+                            <img src={this.props.profile_picture} alt = {profileImage} id="profile-picture" />
                         </IconButton>
                         <Menu id="profile-menu" anchorEl={this.state.anchorEl} open={this.state.menuIsOpen} onClose={this.profileButtonClicked}>
                             <MenuList className={classes.menuList}>
