@@ -14,6 +14,7 @@ import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { Redirect } from 'react-router-dom'
 
 
 
@@ -80,6 +81,7 @@ class Home extends Component {
             commentText: "",
             searchOn: false,
             originalImageArr: {},
+            isLoggedIn:true,
             count: 1,
         };
     }
@@ -227,12 +229,12 @@ class Home extends Component {
         const { classes } = this.props;
         return (
             <div>
-                <Header profile_picture={this.state.profile_picture} onSearchTextChange={this.onSearchTextChange} />
-
+                <Header profile_picture={this.state.profile_picture} showSearchBox = {this.state.isLoggedIn?true:false} showProfileIcon = {this.state.isLoggedIn?true:false} onSearchTextChange={this.onSearchTextChange} />
+                {this.state.isLoggedIn === true ? 
                 <div className="flex-container">
                     <Grid container spacing={3} wrap="wrap" alignContent="center" className={classes.grid}>
                         {this.state.images.map(image => (
-                            <Grid key={image.id} item xs={10} sm={6} className="grid-item">
+                            <Grid key={image.id} item xs={12} sm={6} className="grid-item">
                                 <Card className={classes.card}>
                                     <CardHeader
                                         classes={{
@@ -279,7 +281,7 @@ class Home extends Component {
                                                         {comment.text}
                                                     </Typography>
                                                 </div>
-                                                : null
+                                                : ""
 
                                         ))}
                                         <FormControl className={classes.comment} fullWidth={true}>
@@ -297,6 +299,8 @@ class Home extends Component {
 
 
                 </div>
+                :<Redirect to="/login"/>
+                }
 
             </div>
 

@@ -25,6 +25,9 @@
     border-radius: 4px;
     height: 40px;
 }
+.header-searchbox-false{
+    margin-left: auto
+}
 
 #search-icon{
     height: 27px;

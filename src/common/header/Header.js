@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import profileImage from "../../assets/upgrad.svg"
 import { MenuList } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { Redirect } from 'react-router-dom'
 
 import "./Header.css";
 
@@ -25,6 +26,9 @@ const styles = (theme => ({
         "width": "150px",
         padding:"0px"
 
+    },
+    profileIcon:{
+        "margin-left":"auto",
     }
 
 }))
@@ -36,8 +40,9 @@ class Header extends Component {
         super();
         this.state = {
             menuIsOpen: false,
+            isLoggedIn:true,
         };
-
+        
     }
     openMenu = () => this.setState({
         ...this.state,
@@ -51,31 +56,50 @@ class Header extends Component {
         this.props.onSearchTextChange(event.target.value);
     }
 
+    onLogOutClicked = (event) => {
+        sessionStorage.removeItem("access-token");
+        this.setState({
+            isLoggedIn:false
+        })   
+    }
+    
+    renderRedirect = () => {
+        if(!this.state.isLoggedIn){
+            return (<Redirect to = "/login" />)
+        }
+    }
+
     render() {
         const {classes} = this.props;
         return (
             <div>
+                {this.renderRedirect()}
                 <header className="app-header">
                     <a href='/home' id="app-logo">Image Viewer</a>
-
+                    {this.props.showSearchBox ?
                     <span className="header-searchbox">
                         <SearchIcon id="search-icon"></SearchIcon>
                         <Input className={classes.searchText} placeholder="Search…" disableUnderline={true} onChange={this.onSearchChangeHandler}/>
                     </span>
+                    :<span className = "header-searchbox-false"/>
+                    }
+                    {this.props.showProfileIcon ?
                     <span>
-                        <IconButton id="profile-icon" onClick={event => this.profileButtonClicked(event)}>
+                        <IconButton id="profile-icon" className={classes.profileIcon}onClick={event => this.profileButtonClicked(event)}>
                             <img src={this.props.profile_picture} alt = {profileImage} id="profile-picture" />
                         </IconButton>
                         <Menu id="profile-menu" anchorEl={this.state.anchorEl} open={this.state.menuIsOpen} onClose={this.profileButtonClicked}>
                             <MenuList className={classes.menuList}>
-                         <Link to={"/profile/"} className={classes.menuItems} underline="none" color = {"default"}>
+                         <Link to={"/profile"} className={classes.menuItems} underline="none" color = {"default"}>
                             <MenuItem className = {classes.menuItems} onClick={this.onMyAccountClicked} disableGutters = {false}>My account</MenuItem>
                          </Link>
                             <div className = "horizontal-line"> </div>
-                            <MenuItem className = "menu-items" onClick={this.profileButtonClicked}>Logout</MenuItem>
+                            <MenuItem className = "menu-items" onClick={this.onLogOutClicked}>Logout</MenuItem>
                             </MenuList>
                         </Menu>
                     </span>
+                    :""
+                    }
 
                 </header>
 
