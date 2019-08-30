@@ -84,9 +84,7 @@ componentWillMount(){
     xhr.send(data);
 
 }
-
-    
-
+  
 
     likeBtnHandler = () => {
         this.state.liked ? this.setState({ ...this.state, liked: false }) : this.setState({ ...this.state, liked: true });
