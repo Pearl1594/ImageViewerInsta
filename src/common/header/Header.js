@@ -48,7 +48,7 @@ class Header extends Component {
         this.openMenu();
     };
     onSearchChangeHandler = (event) => {
-        //this.props.onSearchTextChange(event.target.value);
+        this.props.onSearchTextChange(event.target.value);
     }
 
     render() {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, FormControl } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -11,7 +11,12 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import IconButton from '@material-ui/core/IconButton'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+
+
+
 
 import "./Home.css";
 
@@ -24,6 +29,8 @@ const styles = (theme => ({
     },
     grid: {
         padding: "20px",
+        "margin-left": "10%",
+        "margin-right": "10%",
     },
     card: {
         maxWidth: "100%",
@@ -43,13 +50,21 @@ const styles = (theme => ({
         'font-weight': '600',
     },
 
-    imageCommentText: {
-        width: "80%",
-    },
-
     addCommentBtn: {
         "margin-left": "15px",
     },
+
+    comment: {
+        "flex-direction": "row",
+        "margin-top": "25px",
+        "align-items": "baseline",
+        "justify-content": "center",
+    },
+
+    commentUsername: {
+        fontSize: "inherit"
+    }
+
 }));
 
 class Home extends Component {
@@ -59,8 +74,13 @@ class Home extends Component {
         super()
         this.state = {
             images: [],
+            comments: [],
             profile_picture: "",
-            liked: false
+            userName: "",
+            commentText: "",
+            searchOn: false,
+            originalImageArr: {},
+            count: 1,
         };
     }
     UNSAFE_componentWillMount() {
@@ -72,7 +92,8 @@ class Home extends Component {
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
                 that.setState({
-                    profile_picture: JSON.parse(this.responseText).data.profile_picture
+                    profile_picture: JSON.parse(this.responseText).data.profile_picture,
+                    userName: JSON.parse(this.responseText).data.username
 
                 });
             };
@@ -87,28 +108,52 @@ class Home extends Component {
 
                 let imageArr = JSON.parse(this.responseText).data
                 imageArr.forEach(element => {
-                    var date = parseInt(element.created_time,10);
-                    date = new Date(date * 1000); 
+                    var date = parseInt(element.created_time, 10);
+                    date = new Date(date * 1000);
                     element.created_time = date.toLocaleString()
-                    
+
                 });
-                reload(imageArr);
- 
+                that.loadHomePage(imageArr);
+
             }
         })
         xhrImages.open("GET", this.props.baseUrl + "media/recent?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
         xhrImages.send();
-        
-        function reload(imageArr){
-            that.setState({
-                images:imageArr   //JSON.parse(this.responseText).data
-            });
+    }
+
+    loadHomePage = (imageArr) => {
+        this.setState({
+            images: imageArr   //JSON.parse(this.responseText).data
+        });
+    }
+
+    onCommentTextChangeHandler = (event, imageId) => {
+        var comment = {
+            id: imageId,
+            text: event.target.value,
         }
-
-
+        this.setState({
+            commentText: comment,
+        });
     }
 
 
+    onClickAddBtn = (imageId) => {
+        var count = this.state.count
+        var comment = {
+            id: count,
+            imageId: imageId,
+            username: this.state.userName,
+            text: this.state.commentText.text,
+        }
+        count++;
+        var comments = [...this.state.comments, comment];
+        this.setState({
+            count: count,
+            comments: comments,
+            commentText: "",
+        })
+    }
 
 
     likeBtnHandler = (imageId) => {
@@ -138,17 +183,56 @@ class Home extends Component {
         }
     };
 
+    onSearchTextChange = (keyword) => {
+        if (!(keyword === "")) {
+            var originalImageArr = [];
+            this.state.searchOn ? originalImageArr = this.state.originalImageArr : originalImageArr = this.state.images;
+            var updatedImageArr = [];
+            var searchOn = true;
+            keyword = keyword.toLowerCase();
+            originalImageArr.forEach((element) => {
+                var caption = element.caption.text.split("\n")[0];
+                caption.toLowerCase();
+                if (caption.includes(keyword)) {
+                    updatedImageArr.push(element);
+                }
+            })
+            if (!this.state.searchOn) {
+                this.setState({
+                    ...this.state,
+                    searchOn: searchOn,
+                    images: updatedImageArr,
+                    originalImageArr: originalImageArr,
+
+                })
+            } else {
+                this.setState({
+                    ...this.state,
+                    images: updatedImageArr
+                })
+            }
+        } else {
+            searchOn = false
+            this.setState({
+                ...this.state,
+                searchOn: searchOn,
+                images: this.state.originalImageArr,
+                originalImageArr: [],
+            })
+
+        }
+    }
+
     render() {
         const { classes } = this.props;
         return (
             <div>
-                <Header profile_picture={this.state.profile_picture} />
+                <Header profile_picture={this.state.profile_picture} onSearchTextChange={this.onSearchTextChange} />
 
                 <div className="flex-container">
-                    <Grid container spacing={3} justify="center" wrap="wrap" alignContent="center" className={classes.grid}>
-
+                    <Grid container spacing={3} wrap="wrap" alignContent="center" className={classes.grid}>
                         {this.state.images.map(image => (
-                            <Grid key={image.id} item xs={10} sm={5} className="grid-item">
+                            <Grid key={image.id} item xs={10} sm={6} className="grid-item">
                                 <Card className={classes.card}>
                                     <CardHeader
                                         classes={{
@@ -161,7 +245,7 @@ class Home extends Component {
                                         subheader={image.created_time}
                                         className={classes.cardheader}
                                     />
-                                   
+
                                     <CardContent>
                                         <img src={image.images.standard_resolution.url} alt={profileImage} className={classes.media} />
                                         <div className="horizontal-rule"></div>
@@ -175,27 +259,54 @@ class Home extends Component {
                                             <IconButton className="like-button" aria-label="like-button" onClick={() => this.likeBtnHandler(image.id)}>
                                                 {image.user_has_liked ? <FavoriteIcon className="image-liked-icon" fontSize="large" /> : <FavoriteBorderIcon className="image-like-icon" fontSize="large" />}
                                             </IconButton>
-                                            <span>
-                                                {image.likes.count} likes
-                                            </span>
+                                                {image.likes.count=== 1 ? 
+                                                <span>
+                                                    {image.likes.count} like
+                                                </span>
+                                                : <span>
+                                                    {image.likes.count} likes
+                                                </span>
+                                                }
                                         </div>
-                                        <div className="image-comment-box">
-                                            <Input className={classes.imageCommentText} placeholder="Add a comment" />
-                                            <span>
-                                                <Button variant="contained" color="primary" className={classes.addCommentBtn}>
-                                                    Add
-                                                </Button>
-                                            </span>
-                                        </div>
+                                        {this.state.comments.map(comment => (
+
+                                            image.id === comment.imageId ?
+                                                <div className="comment-display" key={comment.id}>
+                                                    <Typography variant="subtitle2" className={classes.commentUsername} gutterbottom="true" >
+                                                        {comment.username}:
+                                                        </Typography>
+                                                    <Typography variant="body1" className="comment-text" gutterbottom="true">
+                                                        {comment.text}
+                                                    </Typography>
+                                                </div>
+                                                : null
+
+                                        ))}
+                                        <FormControl className={classes.comment} fullWidth={true}>
+                                            <InputLabel htmlFor="comment" >Add a comment</InputLabel>
+                                            <Input id="comment" className="comment-text" name="commentText" onChange={(event) => this.onCommentTextChangeHandler(event, image.id)} value={image.id === this.state.commentText.id ? this.state.commentText.text : ""} />
+                                            <Button variant="contained" color="primary" className={classes.addCommentBtn} onClick={() => this.onClickAddBtn(image.id)}>
+                                                ADD
+                                            </Button>
+                                        </FormControl>
                                     </CardContent>
                                 </Card>
                             </Grid>
                         ))}
                     </Grid>
+
+
                 </div>
+
             </div>
+
+
         )
+
+
     }
+
+
 }
 
 export default withStyles(styles)(Home);
