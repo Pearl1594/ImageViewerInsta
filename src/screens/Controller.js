@@ -6,11 +6,16 @@ import Home from './home/Home';
 
 
 class Controller extends Component{
+    constructor(){
+        super()
+        this.baseUrl = "https://api.instagram.com/v1/users/self/";
+    }
+
     render(){
         return(
             <Router>
                 <div className = 'main-container'>
-                    <Route path = '/home' render={(props) => <Home {...props}/> }/>
+                    <Route path = '/home' render={(props) => <Home {...props} baseUrl = {this.baseUrl}/> }/>
                 </div>
             </Router>
         )
