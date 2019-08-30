@@ -192,19 +192,10 @@ class Home extends Component {
                             </Grid>
                         ))}
                     </Grid>
-
-
                 </div>
-
             </div>
-
-
         )
-
-
     }
-
-
 }
 
 export default withStyles(styles)(Home);
