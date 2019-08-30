@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import Header from '../../common/header/Header';
@@ -60,112 +58,144 @@ class Home extends Component {
     constructor() {
         super()
         this.state = {
-            profile_picture:"",
+            images: [],
+            profile_picture: "",
             liked: false
         };
     }
-componentWillMount(){
-    // Get data from first API endpoint
+    UNSAFE_componentWillMount() {
+        // Get data from first API endpoint
 
-    let data = null;
-    let xhr = new XMLHttpRequest();
-    let that = this ;
-    xhr.addEventListener("readystatechange", function () {
-        if (this.readyState == 4){
-            that.setState({
-                profile_picture : JSON.parse(this.responseText).data.profile_picture
-                
-            });   
-            console.log(that.state.profile_picture);      
-        };
+        let data = null;
+        let xhr = new XMLHttpRequest();
+        let that = this;
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                that.setState({
+                    profile_picture: JSON.parse(this.responseText).data.profile_picture
+
+                });
+            };
+        });
+        xhr.open("GET", this.props.baseUrl + "?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
+        xhr.send(data);
+
+        // Get data from second api all the images
+        let xhrImages = new XMLHttpRequest();
+        xhrImages.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+
+                let imageArr = JSON.parse(this.responseText).data
+                imageArr.forEach(element => {
+                    var date = parseInt(element.created_time,10);
+                    date = new Date(date * 1000); 
+                    element.created_time = date.toLocaleString()
+                    
+                });
+                reload(imageArr);
+ 
+            }
+        })
+        xhrImages.open("GET", this.props.baseUrl + "media/recent?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
+        xhrImages.send();
         
-    });
-    xhr.open("GET",this.props.baseUrl+"?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
-    xhr.send(data);
-
-}
-  
-
-    likeBtnHandler = () => {
-        this.state.liked ? this.setState({ ...this.state, liked: false }) : this.setState({ ...this.state, liked: true });
-    };
-
-    render() {
-        var d = new Date();
-        d = d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear() + "/" + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-        const { classes } = this.props;
-        return (
-            <div>
-                <Header profile_picture = {this.state.profile_picture}/>
-
-                <div className="flex-container">
-                    <Grid container spacing={3} justify="center" wrap="wrap" alignContent="center" className={classes.grid}>
-                        <Grid item xs={10} sm={5} className="grid-item">
-                            <Card className={classes.card}>
-                                <CardHeader
-                                    classes={{
-                                        title: classes.title,
-                                    }}
-                                    avatar={
-                                        <Avatar src={profileImage} className={classes.avatar}>
-
-                                        </Avatar>
-                                    }
-
-                                    title="upGrad"
-
-                                    subheader={d}
-                                    className={classes.cardheader}
-                                />
-
-                                <CardContent>
-                                    {/* <CardMedia
-                                        className={classes.media}
-                                        image={profileImage}
-                                        title="Instagram-Pictures"
-                                    /> */}
-                                    <img src={profileImage} className={classes.media} />
-                                    <div className="horizontal-rule"></div>
-                                    <div className="image-caption">
-                                        Dummy Text & Image for now
-                                 </div>
-                                    <div className="image-hashtags">
-                                        #AllDummmy #coolpictures #nicepicture #hotpicture #;D
-                                 </div>
-                                    <div>
-                                        <IconButton className="like-button" aria-label="like-button" onClick={this.likeBtnHandler}>
-                                            {this.state.liked ? <FavoriteIcon className="image-liked-icon" fontSize="large" /> : <FavoriteBorderIcon className="image-like-icon" fontSize="large" />}
-                                        </IconButton>
-                                        <span>
-                                            7 likes
-                                     </span>
-                                    </div>
-                                    <div className="image-comment-box">
-                                        <Input className={classes.imageCommentText} placeholder="Add a comment" />
-                                        <span>
-                                            <Button variant="contained" color="primary" className={classes.addCommentBtn}>
-                                                Add
-                                         </Button>
-                                        </span>
-
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
-
-
-                </div>
-
-            </div>
-
-
-        )
+        function reload(imageArr){
+            that.setState({
+                images:imageArr   //JSON.parse(this.responseText).data
+            });
+        }
 
 
     }
 
 
+
+
+    likeBtnHandler = (imageId) => {
+        var i = 0
+        var imageArray = this.state.images
+        for (i; i < imageArray.length; i++) {
+            if (imageArray[i].id === imageId) {
+                if (imageArray[i].user_has_liked === true) {
+                    imageArray[i].user_has_liked = false;
+                    imageArray[i].likes.count--;
+                    this.setState({
+                        images: imageArray
+                    });
+                    break;
+                } else {
+                    imageArray[i].user_has_liked = true;
+                    imageArray[i].likes.count++;
+                    this.setState({
+                        images: imageArray
+                    });
+                    break;
+
+                }
+            }
+
+
+        }
+    };
+
+    render() {
+        const { classes } = this.props;
+        return (
+            <div>
+                <Header profile_picture={this.state.profile_picture} />
+
+                <div className="flex-container">
+                    <Grid container spacing={3} justify="center" wrap="wrap" alignContent="center" className={classes.grid}>
+
+                        {this.state.images.map(image => (
+                            <Grid key={image.id} item xs={10} sm={5} className="grid-item">
+                                <Card className={classes.card}>
+                                    <CardHeader
+                                        classes={{
+                                            title: classes.title,
+                                        }}
+                                        avatar={
+                                            <Avatar src={image.caption.from.profile_picture} className={classes.avatar}></Avatar>
+                                        }
+                                        title={image.caption.from.username}
+                                        subheader={image.created_time}
+                                        className={classes.cardheader}
+                                    />
+                                   
+                                    <CardContent>
+                                        <img src={image.images.standard_resolution.url} alt={profileImage} className={classes.media} />
+                                        <div className="horizontal-rule"></div>
+                                        <div className="image-caption">
+                                            {image.caption.text.split("\n")[0]}
+                                        </div>
+                                        <div className="image-hashtags">
+                                            {image.caption.text.split("\n")[1]}
+                                        </div>
+                                        <div>
+                                            <IconButton className="like-button" aria-label="like-button" onClick={() => this.likeBtnHandler(image.id)}>
+                                                {image.user_has_liked ? <FavoriteIcon className="image-liked-icon" fontSize="large" /> : <FavoriteBorderIcon className="image-like-icon" fontSize="large" />}
+                                            </IconButton>
+                                            <span>
+                                                {image.likes.count} likes
+                                            </span>
+                                        </div>
+                                        <div className="image-comment-box">
+                                            <Input className={classes.imageCommentText} placeholder="Add a comment" />
+                                            <span>
+                                                <Button variant="contained" color="primary" className={classes.addCommentBtn}>
+                                                    Add
+                                                </Button>
+                                            </span>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
+            </div>
+        )
+    }
 }
 
 export default withStyles(styles)(Home);
