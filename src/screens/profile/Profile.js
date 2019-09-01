@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
-import { Typography } from '@material-ui/core';
 import Header from "../../common/header/Header";
-
-
-
-
+import './Profile.css'
 
 
 class Profile extends Component {
-
-
-
+    constructor() {
+        super();
+        this.state = {}
+    }
+    
     render() {
         return (
             <div>
-                <Header></Header>
-                <Typography> This is profile page </Typography>
+               <Header />
             </div>
         )
     }
+
 }
 
 export default Profile;
