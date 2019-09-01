@@ -49,6 +49,7 @@ class Profile extends Component {
             modalIsOpen: false,
             newName: "",
             fullNameRequired: "dispNone",
+            imagesData: null,
         }
     }
 
@@ -75,6 +76,18 @@ class Profile extends Component {
             xhr.setRequestHeader("Cache-Control", "no-cache");
             xhr.setRequestHeader("Accept", "application/json");
             xhr.send(data);
+
+            var imageData = null;
+            let imageXhr = new XMLHttpRequest();
+            imageXhr.addEventListener('readystatechange', function () {
+                if (imageXhr.readyState === 4) {
+                    that.setState({ imagesData: JSON.parse(this.responseText).data });
+                }
+            });
+            imageXhr.open("GET", this.props.baseUrl + "/media/recent?access_token=" + sessionStorage.getItem("access-token"));
+            imageXhr.setRequestHeader("Cache-Control", "no-cache");
+            imageXhr.setRequestHeader("Accept", "application/json");
+            imageXhr.send(imageData);
         }
     }
 
@@ -108,7 +121,7 @@ class Profile extends Component {
         return (
             <div>
                 {
-                    this.state.username ?
+                    this.state.username && this.state.imagesData ?
                         <div className="top">
                             {/* Imports Header component and based on whether the user is logged in and the page that is being loaded the contents of Header is modified  */}
                             <Header profile_picture={this.state.profilePicture} showSearchBox={false} showProfileIcon={this.state.isLoggedIn ? true : false} showMyAccount={false} />
