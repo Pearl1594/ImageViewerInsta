@@ -314,15 +314,15 @@ class Profile extends Component {
 
                                                                 this.state.comments.map(comment => (
                                                                     this.state.currId === comment.imageId ?
-                                                                    <div className="comment-display" key={comment.id}>
+                                                                        <div className="comment-display" key={comment.id}>
 
-                                                                        <Typography variant="subtitle2" className={classes.commentUsername} gutterbottom="true" >
-                                                                            {comment.username}:
-                                                        </Typography>
-                                                                        <Typography variant="body1" className="comment-text" gutterbottom="true">
-                                                                            {comment.text}
-                                                                        </Typography>
-                                                                    </div> : null
+                                                                            <Typography variant="subtitle2" className={classes.commentUsername} gutterbottom="true" >
+                                                                                {comment.username}:
+                                                                            </Typography>
+                                                                            <Typography variant="body1" className="comment-text" gutterbottom="true">
+                                                                                {comment.text}
+                                                                            </Typography>
+                                                                        </div> : null
                                                                 ))
                                                             }
                                                         </div>
@@ -334,17 +334,17 @@ class Profile extends Component {
                                                         {this.state.likeCounts === 1 ?
                                                             <span>
                                                                 {this.state.likeCounts} like
-                                                </span>
+                                                            </span>
                                                             : <span>
                                                                 {this.state.likeCounts} likes
-                                                </span>
+                                                              </span>
                                                         }
                                                         <FormControl className={classes.comment} fullWidth={true}>
                                                             <InputLabel htmlFor="comment" >Add a comment</InputLabel>
                                                             <Input id="comment" className="comment-text" name="commentText" onChange={(event) => this.onCommentTextChangeHandler(event, this.state.currId)} value={this.state.currId === this.state.commentText.id ? this.state.commentText.text : ""} />
                                                             <Button variant="contained" color="primary" className={classes.addCommentBtn} onClick={() => this.onClickAddBtn(this.state.currId)}>
                                                                 ADD
-                                                </Button>
+                                                            </Button>
                                                         </FormControl>
                                                     </div>
                                                 </div>
