@@ -60,13 +60,16 @@ class Login extends Component {
             // In case the username and password are incorrect
             this.setState({ incorrectUsernamePasswordMessage: "dispBlock" });
         }
+
     }
 
     render() {
         return (
             <div>
+
                 {this.state.isLoggedIn === true ?
                     <Redirect to="/home" /> :
+
                     <div>
                         <Header></Header>
                         <Card className="login-card">
@@ -90,7 +93,9 @@ class Login extends Component {
                             <Button variant="contained" color="primary" onClick={this.loginClickHandler} className="login-btn">LOGIN</Button>
 
                         </Card>
+
                     </div>}
+
 
             </div>
 
