@@ -7,7 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
-
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
 
@@ -23,10 +23,53 @@ class Login extends Component {
         };
     }
 
+    /**
+     * Function that handles any changes in the username field and updates state accordingly
+     */
+    inputUsernameChangeHandler = (e) => {
+        this.setState({ username: e.target.value });
+    }
+
+    /**
+     * Function that handles any changes in the password field and updates state accordingly
+     */
+    inputPasswordChangeHandler = (e) => {
+        this.setState({ password: e.target.value });
+    }
+
+    /**
+     * Function that handles what happens when we click the login button
+     */
+    loginClickHandler = () => {
+        //Setting credentials in the login handler
+        let username = "InstaGrad";
+        let password = "Sass@123#";
+
+        let accessToken = "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784";
+        if (this.state.username === "" || this.state.password === "") {
+            // The usernameRequired and passwordRequired fields are used when we want to store the class to be assigned 
+            this.state.username === "" ? this.setState({ usernameRequired: "dispBlock" }) : this.setState({ usernameRequired: "dispNone" });
+            this.state.password === "" ? this.setState({ passwordRequired: "dispBlock" }) : this.setState({ passwordRequired: "dispNone" });
+            this.setState({ incorrectUsernamePasswordMessage: "dispNone" });
+        } else if (this.state.username === username && this.state.password === password) {
+            // Setting token in session storage
+            sessionStorage.setItem("access-token", accessToken);
+            // Setting state so as to check and route to home page if login is successful. 
+            this.setState({ isLoggedIn: true });
+        } else {
+            // In case the username and password are incorrect
+            this.setState({ incorrectUsernamePasswordMessage: "dispBlock" });
+        }
+
+    }
+
     render() {
         return (
             <div>
-                
+
+                {this.state.isLoggedIn === true ?
+                    <Redirect to="/home" /> :
+
                     <div>
                         <Header></Header>
                         <Card className="login-card">
@@ -50,7 +93,9 @@ class Login extends Component {
                             <Button variant="contained" color="primary" onClick={this.loginClickHandler} className="login-btn">LOGIN</Button>
 
                         </Card>
-                    </div>
+
+                    </div>}
+
 
             </div>
 
