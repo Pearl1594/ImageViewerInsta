@@ -38,6 +38,10 @@
     top: 20%;
 }
 
+.bottom {
+    bottom: 80%;
+}
+
 .dispBlock {
     display: block;
 }
@@ -48,6 +52,10 @@
 
 .red {
     color: red;
+}
+
+.image-margins {
+    margin: 0 100px 0 100px
 }
 
 @media (max-width: 992px) {

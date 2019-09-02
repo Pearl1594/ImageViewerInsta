@@ -11,6 +11,8 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from '@material-ui/core/Input';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 
 const customStyles = {
     content: {
@@ -26,7 +28,11 @@ const customStyles = {
 const styles = theme => ({
     fab: {
         margin: theme.spacing(1.5),
-    }
+    },
+    gridListMain: {
+        transform: 'translateZ(0)',
+        cursor: 'pointer'
+    },
 })
 
 const TabContainer = function (props) {
@@ -116,6 +122,22 @@ class Profile extends Component {
         });
     }
 
+    imageClickHandler = (image) => {
+        var data = image.caption.text
+        this.setState({
+            imageModalIsOpen: true,
+            currId: image.id,
+            currImage: image.images.standard_resolution.url,
+            currProfilePicture: image.user.profile_picture,
+            currImgName: image.user.fullName,
+            currCaption: data.substring(0, data.indexOf('#')),
+            currTags: data.substring(data.indexOf('#')),
+            currLikeStatus: image.user_has_liked,
+            likeCounts: image.likes.count
+        });
+
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -159,6 +181,16 @@ class Profile extends Component {
                                                 <Button variant="contained" color="primary" onClick={this.updateFullNameHandler}>UPDATE</Button>
                                             </Modal>
                                         </div>
+                                    </div><br />
+                                    <div className="bottom image-margins">
+                                        <GridList cellHeight={350} cols={3} className={classes.gridListMain}>
+                                            {
+                                                this.state.imagesData.map(image => (
+                                                    <GridListTile onClick={() => this.imageClickHandler(image)} className="image-grid-item" key={"grid" + image.id}>
+                                                        <img src={image["images"]["standard_resolution"]["url"]} alt={image.id} />
+                                                    </GridListTile>
+                                                ))}
+                                        </GridList>
                                     </div>
                                 </div> : <Redirect to="/login" />
                             }
