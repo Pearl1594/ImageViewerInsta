@@ -1,17 +1,39 @@
 import React, { Component } from 'react';
 import Header from "../../common/header/Header";
 import './Profile.css'
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import EditIcon from '@material-ui/icons/Edit';
 import { Redirect } from 'react-router-dom';
+import Modal from 'react-modal'
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from '@material-ui/core/Input';
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)'
+    }
+};
 
 const styles = theme => ({
     fab: {
         margin: theme.spacing(1.5),
     }
 })
+
+const TabContainer = function (props) {
+    return (
+        <Typography component="div" style={{ padding: 0, textAlign: "center" }}>{props.children}</Typography>
+    );
+}
 
 class Profile extends Component {
     constructor() {
@@ -24,6 +46,9 @@ class Profile extends Component {
             noOfPosts: 0,
             follows: 0,
             followedBy: 0,
+            modalIsOpen: false,
+            newName: "",
+            fullNameRequired: "dispNone",
         }
     }
 
@@ -51,6 +76,31 @@ class Profile extends Component {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.send(data);
         }
+    }
+
+    // Sets state of modalIsOpen to true to open the modal when EditIcon is clicked
+    openModalHandler = () => {
+        this.setState({ modalIsOpen: true });
+    }
+
+    // Sets modalIsOpen to false to close the modal
+    closeModalHandler = () => {
+        this.setState({ modalIsOpen: false });
+    }
+
+    // Stores User input for full name in the newName state variable
+    editFullNameHandler = (e) => {
+        this.setState({ newName: e.target.value });
+    }
+
+    // On click of the update button, the name input by the user is saved to fullname and displayed. If Update buttin is clicked
+    // without providing the input, care is taken to prompt the user that it is a required field is you want to update.
+    updateFullNameHandler = () => {
+        this.state.newName === "" ? this.setState({ fullNameRequired: "dispBlock" }) : this.setState({
+            fullNameRequired: "dispNone",
+            fullname: this.state.newName,
+            modalIsOpen: false
+        });
     }
 
     render() {
@@ -84,6 +134,17 @@ class Profile extends Component {
                                                     </Fab>
                                                 </div>
                                             </Typography>
+                                            <Modal ariaHideApp={false} isOpen={this.state.modalIsOpen} contentLabel="Label" onRequestClose={this.closeModalHandler} style={customStyles}>
+                                                <h2>Edit</h2><br />
+                                                <TabContainer>
+                                                    <FormControl required>
+                                                        <InputLabel htmlFor="fullname">Full Name</InputLabel>
+                                                        <Input id="fullname" type="text" fullname={this.state.fullname} onChange={this.editFullNameHandler} />
+                                                        <FormHelperText className={this.state.fullNameRequired}><span className="red">required</span></FormHelperText>
+                                                    </FormControl><br /><br />
+                                                </TabContainer><br />
+                                                <Button variant="contained" color="primary" onClick={this.updateFullNameHandler}>UPDATE</Button>
+                                            </Modal>
                                         </div>
                                     </div>
                                 </div> : <Redirect to="/login" />

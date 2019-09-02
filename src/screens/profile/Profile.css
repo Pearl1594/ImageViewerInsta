@@ -38,6 +38,18 @@
     top: 20%;
 }
 
+.dispBlock {
+    display: block;
+}
+
+.dispNone {
+    display: none;
+}
+
+.red {
+    color: red;
+}
+
 @media (max-width: 992px) {
     .flex-container {
         flex-direction: row;
