@@ -16,14 +16,14 @@
 .image-caption{
     padding-top: 5px;
     font-family: auto;
-    font-size: 16px;
+    font-size: 18px;
 }
 /* style for the hashtags of the image */
 .image-hashtags{
-    font-size: 14px;
+    font-size: 16px;
     padding-top: 3px;
     font-family: auto;
-    color: rgb(106,181,254);
+    color: rgb(122,188,255);
 }
 
 /* style for the favorite icon when liked   */

@@ -1,15 +1,15 @@
 .app-header{
     display: flex;
     height: 40px;
-    background-color: rgb(37,50,57);
+    background-color : #263238;
     line-height: 40px;
     padding: 20px;
     align-items: center;
 }
 
 #app-logo{
-    color: white;
-    font-size: xx-large;
+    color: #fff;
+    font-size: 18px;
     text-decoration-line: none; 
 }
 

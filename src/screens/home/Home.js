@@ -78,7 +78,8 @@ class Home extends Component {
             commentText: "",
             searchOn: false,
             originalImageArr: {},
-            isLoggedIn: false,
+            isLoggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+            accessToken: sessionStorage.getItem("access-token"),
             count: 1,
         };
     }
@@ -103,7 +104,7 @@ class Home extends Component {
                     });
                 };
             });
-            xhr.open("GET", this.props.baseUrl + "?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
+            xhr.open("GET", this.props.baseUrl + "?access_token=" + that.state.accessToken);
             xhr.send(data);
         }
 
@@ -130,7 +131,7 @@ class Home extends Component {
 
                 }
             })
-            xhrImages.open("GET", this.props.baseUrl + "media/recent?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
+            xhrImages.open("GET", this.props.baseUrl + "media/recent?access_token="+ that.state.accessToken);
             xhrImages.send();
         }
     }
@@ -265,7 +266,7 @@ class Home extends Component {
         return (
             <div>
                 {/* Rending the Header and passing three parameter profile_picture,showSearchBox & showProfileIcon based on the value it is shown in the header */}
-                <Header profile_picture={this.state.profile_picture} showSearchBox={this.state.isLoggedIn ? true : false} showProfileIcon={this.state.isLoggedIn ? true : false} onSearchTextChange={this.onSearchTextChange} />
+                <Header  profile_picture={this.state.profile_picture}  showSearchBox={this.state.isLoggedIn ? true : false} showProfileIcon={this.state.isLoggedIn ? true : false} onSearchTextChange={this.onSearchTextChange} showMyAccount = {true} />
                 {this.state.isLoggedIn === true ?    //checking isLoggedIn is true only then the images are shown
                     <div className="flex-container">
                         <Grid container spacing={3} wrap="wrap" alignContent="center" className={classes.grid}>
@@ -343,7 +344,7 @@ class Home extends Component {
 
 
                     </div>
-                    : <Redirect to="/login" /> //If the user is not logged in then redirecting to login page
+                    : <Redirect to="/" /> //If the user is not logged in then redirecting to login page
                 }
 
             </div>
