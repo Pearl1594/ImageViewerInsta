@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
 import Header from "../../common/header/Header";
 import './Profile.css'
+import { Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import EditIcon from '@material-ui/icons/Edit';
+import { Redirect } from 'react-router-dom';
 
+const styles = theme => ({
+    fab: {
+        margin: theme.spacing(1.5),
+    }
+})
 
 class Profile extends Component {
     constructor() {
@@ -44,6 +54,7 @@ class Profile extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
             <div>
                 {
@@ -51,12 +62,38 @@ class Profile extends Component {
                         <div className="top">
                             {/* Imports Header component and based on whether the user is logged in and the page that is being loaded the contents of Header is modified  */}
                             <Header profile_picture={this.state.profilePicture} showSearchBox={false} showProfileIcon={this.state.isLoggedIn ? true : false} showMyAccount={false} />
+                            {this.state.isLoggedIn === true ?
+                                <div className="flex-container">
+                                    <div className="flex-container">
+                                        <div className="left">
+                                            <div className="profile-summary">
+                                                <img className="profile-image" src={this.state.profilePicture} alt={this.state.fullName} />
+                                            </div>
+                                        </div>
+                                        <div className="profile-summary-1">
+                                            <Typography variant="h5" component="h5">{this.state.username}</Typography><br />
+                                            <Typography>
+                                                <span> Posts: {this.state.noOfPosts} </span>
+                                                <span className="spacing" > Follows: {this.state.follows} </span>
+                                                <span className="spacing"> Followed By: {this.state.followedBy} </span>
+                                            </Typography>
+                                            <Typography variant="h6" component="h6">
+                                                <div className="top-spacing">{this.state.fullname}
+                                                    <Fab color="secondary" aria-label="edit" className={classes.fab} >
+                                                        <EditIcon onClick={this.openModalHandler} />
+                                                    </Fab>
+                                                </div>
+                                            </Typography>
+                                        </div>
+                                    </div>
+                                </div> : <Redirect to="/login" />
+                            }
                         </div> : null
                 }
-             </div>
+            </div>
         )
     }
 
 }
 
-export default Profile;
+export default withStyles(styles)(Profile);
