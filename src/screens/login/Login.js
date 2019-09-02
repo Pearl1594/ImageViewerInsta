@@ -55,7 +55,9 @@ class Login extends Component {
             // Setting token in session storage
             sessionStorage.setItem("access-token", accessToken);
             // Setting state so as to check and route to home page if login is successful. 
-            this.setState({ isLoggedIn: true });
+            this.setState({ 
+                isLoggedIn: true,
+            });
         } else {
             // In case the username and password are incorrect
             this.setState({ incorrectUsernamePasswordMessage: "dispBlock" });
@@ -66,24 +68,23 @@ class Login extends Component {
     render() {
         return (
             <div>
-
                 {this.state.isLoggedIn === true ?
-                    <Redirect to="/home" /> :
-
+                <Redirect to= "/home"/>
+                :
                     <div>
                         <Header></Header>
                         <Card className="login-card">
                             <p className="login-header">LOGIN</p>
                             <FormControl required>
                                 <InputLabel htmlFor="username">Username</InputLabel>
-                                <Input id="username" type="text" username={this.state.username} onChange={this.inputUsernameChangeHandler} />
+                                <Input id="username" type="text" username={this.state.username} onChange={this.inputUsernameChangeHandler} value = {this.state.username}/>
                                 <FormHelperText className={this.state.usernameRequired}><span className="red">required</span></FormHelperText>
                             </FormControl>
                             <br />
                             <br />
                             <FormControl required>
                                 <InputLabel htmlFor="password">Password</InputLabel>
-                                <Input id="password" type="password" password={this.state.password} onChange={this.inputPasswordChangeHandler} />
+                                <Input id="password" type="password" password={this.state.password} onChange={this.inputPasswordChangeHandler} value = {this.state.password}/>
                                 <FormHelperText className={this.state.passwordRequired}><span className="red">required</span></FormHelperText>
                             </FormControl>
                             <br />
@@ -91,15 +92,10 @@ class Login extends Component {
                             <FormHelperText className={this.state.incorrectUsernamePasswordMessage}><span className="red" style={{ fontSize: "14px" }}>Incorrect username and/or password</span></FormHelperText>
                             <br />
                             <Button variant="contained" color="primary" onClick={this.loginClickHandler} className="login-btn">LOGIN</Button>
-
                         </Card>
-
-                    </div>}
-
-
+                    </div>
+                }
             </div>
-
-
         );
     }
 }

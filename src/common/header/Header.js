@@ -64,16 +64,16 @@ class Header extends Component {
     //This method is called when log out is clicked in the menu 
     //The method clears the session deatils like access-token and changes the logged to false
     onLogOutClicked = (event) => {
-        sessionStorage.removeItem("access-token");   //Clearing access-token
+        sessionStorage.removeItem("access-token"); //Clearing access-token
         this.setState({
-            isLoggedIn: false     // setting loggedin as false
-        })
+            isLoggedIn:false
+        })  
     }
 
-    //This is called everytime the page renders so that to check if the user is not logged to redirect to login page
-    renderRedirect = () => {
+    // This is called everytime the page renders so that to check if the user is not logged to redirect to login page
+    redirectToLogin = () => {
         if (!this.state.isLoggedIn) {
-            return (<Redirect to="/login" />)
+           return <Redirect to = "/"/>
         }
     }
 
@@ -84,7 +84,7 @@ class Header extends Component {
         return (
             <div>
                 {/* this is called everytime the page reloads to check if the user is logged out if yes the redirects to login page */}
-                {this.renderRedirect()}
+                {this.redirectToLogin()}
                 <header className="app-header">
                     <a href='/home' id="app-logo">Image Viewer</a>
                     {this.props.showSearchBox ?                 //checking if the showSearchBox is true,only then it is shown  
@@ -101,15 +101,17 @@ class Header extends Component {
                             </IconButton>
                             <Menu id="profile-menu" anchorEl={this.state.anchorEl} open={this.state.menuIsOpen} onClose={this.profileButtonClicked}>
                                 <MenuList className={classes.menuList}>
-                                    {this.props.showMyAccount === true &&
+                                    {this.props.showMyAccount === true ?
+                                    <div>
                                         <Link to={"/profile"} className={classes.menuItems} underline="none" color={"default"}>
                                             <MenuItem className={classes.menuItems} onClick={this.onMyAccountClicked} disableGutters={false}>My account</MenuItem>
                                         </Link>
-                                    }
+                                    
                                     <div className="horizontal-line"> </div>
-                                    <Link to={"/login"} className={classes.menuItems} underline="none" color={"default"}>
+                                    </div>
+                                    : ""
+                                    }
                                         <MenuItem className="menu-items" onClick={this.onLogOutClicked}>Logout</MenuItem>
-                                    </Link>
                                 </MenuList>
                             </Menu>
                         </span>

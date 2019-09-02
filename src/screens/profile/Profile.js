@@ -73,7 +73,7 @@ class Profile extends Component {
     constructor() {
         super();
         this.state = {
-            isLoggedIn: false,
+            isLoggedIn: sessionStorage.getItem("access-token") == null ? false : true,
             profilePicture: "",
             username: "",
             fullname: "",
@@ -94,12 +94,12 @@ class Profile extends Component {
             likeCounts: 0,
             count: 0,
             comments: [],
-            commentText: ""
+            commentText: "",
+            accessToken:sessionStorage.getItem("access-token"),
         }
     }
 
     componentDidMount() {
-        sessionStorage.setItem("access-token", "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784");
         if (this.state.isLoggedIn) {
             let resp = {};
             let data = null;
@@ -116,10 +116,9 @@ class Profile extends Component {
                     that.setState({ fullname: resp["full_name"] });
                 }
             });
-            xhr.open("GET", this.props.baseUrl + "?access_token=" + window.sessionStorage.getItem('access-token'));
+            xhr.open("GET", this.props.baseUrl + "?access_token="+ that.state.accessToken);
 
-            xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.setRequestHeader("Accept", "application/json");
+
             xhr.send(data);
 
             var imageData = null;
@@ -129,9 +128,7 @@ class Profile extends Component {
                     that.setState({ imagesData: JSON.parse(this.responseText).data });
                 }
             });
-            imageXhr.open("GET", this.props.baseUrl + "/media/recent?access_token=" + sessionStorage.getItem("access-token"));
-            imageXhr.setRequestHeader("Cache-Control", "no-cache");
-            imageXhr.setRequestHeader("Accept", "application/json");
+            imageXhr.open("GET", this.props.baseUrl + "media/recent?access_token="+that.state.accessToken );
             imageXhr.send(imageData);
         }
     }
@@ -352,7 +349,7 @@ class Profile extends Component {
 
                                         </Modal>
                                     </div>
-                                </div> : <Redirect to="/login" />
+                                </div> : <Redirect to="/" />
                             }
                         </div> : null
                 }
